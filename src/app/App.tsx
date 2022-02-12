@@ -1,9 +1,26 @@
-import "./App.css";
+// components
+import { CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 
-export function App() {
+import { Auth } from "auth/components/Auth";
+import ErrorBoundary from "common/components/ErrorBoundary";
+import { AppLayout } from "./AppLayout";
+import { Routes } from "./Routes";
+
+// utils
+import theme from "lib/mui";
+
+export const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">Mental-List</header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Auth>
+        <ErrorBoundary>
+          <AppLayout>
+            <Routes />
+          </AppLayout>
+        </ErrorBoundary>
+      </Auth>
+    </ThemeProvider>
   );
-}
+};
