@@ -3,14 +3,21 @@ import { Box, Container, Paper } from "@mui/material";
 
 // utils
 import { styled } from "@mui/system";
-import { deepPurple } from "@mui/material/colors";
 
-const StyledBox = styled(Box)(() => ({
-  minHeight: "100vh",
+const sxWapper = { display: "flex", minHeight: "100vh" };
+const sxBackground = {
+  background: "no-repeat url(auth-bg.png)",
+  backgroundSize: "cover",
+  flexGrow: 0,
+  flexBasis: "47%",
+  maxWidth: "47%",
+};
+
+const AuthBox = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
-  flexShrink: 0,
-  background: deepPurple[200],
+  flexBasis: "53%",
+  maxWidth: "53%",
   "&:before": {
     content: "''",
     display: "block",
@@ -27,14 +34,17 @@ const StyledBox = styled(Box)(() => ({
 
 export const Wrapper: React.FC = ({ children }) => {
   return (
-    <StyledBox>
-      <Container maxWidth="sm">
-        <Paper elevation={5}>
-          <Box px={5} py={5}>
-            {children}
-          </Box>
-        </Paper>
-      </Container>
-    </StyledBox>
+    <Box sx={sxWapper}>
+      <Box sx={sxBackground} />
+      <AuthBox>
+        <Container maxWidth="sm">
+          <Paper elevation={5}>
+            <Box px={5} py={5}>
+              {children}
+            </Box>
+          </Paper>
+        </Container>
+      </AuthBox>
+    </Box>
   );
 };
