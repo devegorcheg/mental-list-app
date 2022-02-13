@@ -15,6 +15,10 @@ import { Password } from "ui/Password";
 
 // utils
 import { signup } from "../actions";
+import {
+  password as passwordSchema,
+  email as emailSchema,
+} from "common/validationSchemes";
 
 // types
 import { RootState } from "store";
@@ -23,38 +27,12 @@ import { SxProps, Theme } from "@mui/system";
 const sxTitle: SxProps<Theme> = {
   font: "normal normal bold 24px/27px Comfortaa",
 };
-const spacesRegExp = new RegExp("(.*\\s+.*)");
 
 const validationSchema = object({
   firstName: string().min(3).max(50).required().label("First name"),
   lastName: string().min(3).max(50).required().label("Last name"),
-  email: string().email().required().label("E-mail"),
-  password: string()
-    // uppercase
-    .matches(
-      /(.*?[A-Z]){2,}/,
-      "The string must contain at least 2 uppercase alphabetical character",
-    )
-    // number
-    .matches(
-      /.*[0-9].*/,
-      "The string must contain at least 1 numeric character",
-    )
-    // special
-    .matches(
-      /(.*[@$!%*#?&].*)/,
-      "The string must contain at least one special character",
-    )
-    // spaces
-    .test("spaces", "The string must not contain spaces", value => {
-      if (!value) {
-        return true;
-      }
-      return !spacesRegExp.test(value);
-    })
-    .min(8)
-    .required()
-    .label("Password"),
+  email: emailSchema,
+  password: passwordSchema,
   confirm: string().test(
     "confirm",
     "Password does not match",

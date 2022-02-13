@@ -5,24 +5,31 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 // components
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import { TextField } from "ui/TextField";
 import { Link } from "ui/Link";
 import { Wrapper } from "./Wrapper";
+import { Button } from "ui/Button";
 
 // utils
 import { login } from "../actions";
+import {
+  password as passwordSchema,
+  email as emailSchema,
+} from "common/validationSchemes";
 
 // types
 import { RootState } from "store";
+import { SxProps, Theme } from "@mui/system";
+
+const sxTitle: SxProps<Theme> = {
+  font: "normal normal bold 24px/27px Comfortaa",
+};
 
 const validationSchema = object({
-  email: string().email().required(),
-  password: string()
-    .min(8, "Password must be at least 8 characters long")
-    .max(25, "Password length must be no more than 25 characters")
-    .required(),
+  email: emailSchema,
+  password: passwordSchema,
 });
 
 const initialValues = {
@@ -52,50 +59,49 @@ export const Login: React.FC = () => {
           setSubmitting(false);
         }}
       >
-        {({ isSubmitting, isValid }) => (
-          <Form>
-            <Box mb={5}>
-              <Typography align="center" variant="h4">
-                LOG IN
-              </Typography>
-            </Box>
-            <Box mb={3}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                name="email"
-                label="Email"
-              />
-            </Box>
-            <Box mb={6}>
-              <TextField
-                fullWidth
-                name="password"
-                type="password"
-                label="Password"
-              />
-            </Box>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
+        <Form>
+          <Box mb={9.75}>
+            <Typography align="center" sx={sxTitle}>
+              Sign In
+            </Typography>
+          </Box>
+          <Box mb={3}>
+            <TextField
+              variant="standard"
+              placeholder="Email"
+              fullWidth
+              name="email"
+            />
+          </Box>
+          <Box mb={6}>
+            <TextField
+              variant="standard"
+              placeholder="Password"
+              fullWidth
+              name="password"
+              type="password"
+            />
+          </Box>
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <Button
+              gradient
+              variant="contained"
+              type="submit"
+              size="large"
+              fullWidth
+              sx={{ maxWidth: "257px" }}
             >
-              <Button
-                disabled={isSubmitting || !isValid}
-                variant="contained"
-                color="primary"
-                type="submit"
-                size="large"
-                sx={{ paddingLeft: 5, paddingRight: 5 }}
-              >
-                Log In
-              </Button>
-              <Typography variant="body1">
-                Don't have an account? <Link to="/signup">Sign Up</Link>
-              </Typography>
-            </Box>
-          </Form>
-        )}
+              Sign In
+            </Button>
+            <Typography
+              color="textSecondary"
+              variant="body1"
+              sx={{ marginTop: 4.375 }}
+            >
+              <Link to="/signup">Sign Up</Link>
+            </Typography>
+          </Box>
+        </Form>
       </Formik>
     </Wrapper>
   );
