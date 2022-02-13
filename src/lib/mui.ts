@@ -7,6 +7,9 @@ const theme = createTheme({
       main: deepPurple[500],
     },
   },
+  typography: {
+    fontFamily: '"SF-Pro", "Roboto"',
+  },
 });
 
 export default theme;
