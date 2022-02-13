@@ -11,6 +11,7 @@ import { TextField } from "ui/TextField";
 import { Link } from "ui/Link";
 import { Wrapper } from "./Wrapper";
 import { Button } from "ui/Button";
+import { Password } from "ui/Password";
 
 // utils
 import { signup } from "../actions";
@@ -54,6 +55,14 @@ const validationSchema = object({
     .min(8)
     .required()
     .label("Password"),
+  confirm: string().test(
+    "confirm",
+    "Password does not match",
+    (value, context) => {
+      const { parent } = context;
+      return value === parent?.password;
+    },
+  ),
 });
 
 const initialValues = {
@@ -61,6 +70,7 @@ const initialValues = {
   lastName: "",
   email: "",
   password: "",
+  confirm: "",
 };
 
 export const Signup: React.FC = () => {
@@ -120,14 +130,11 @@ export const Signup: React.FC = () => {
               name="email"
             />
           </Box>
+          <Box mb={3}>
+            <Password name="password" placeholder="Password" />
+          </Box>
           <Box mb={6}>
-            <TextField
-              variant="standard"
-              placeholder="Password"
-              fullWidth
-              type="password"
-              name="password"
-            />
+            <Password name="confirm" placeholder="Confirm password" />
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center">
             <Button
