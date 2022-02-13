@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import { object, string } from "yup";
 import { useDispatch, useSelector } from "react-redux";
+import { useSnackbar } from "notistack";
 
 // components
 import { Box, Typography } from "@mui/material";
@@ -21,7 +22,7 @@ import {
 } from "common/validationSchemes";
 
 // types
-import { RootState } from "store";
+import { IAppDispatch, RootState } from "store";
 import { SxProps, Theme } from "@mui/system";
 
 const sxTitle: SxProps<Theme> = {
@@ -53,7 +54,8 @@ const initialValues = {
 
 export const Signup: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<IAppDispatch>();
+  const { enqueueSnackbar } = useSnackbar();
   const loggedUser = useSelector((state: RootState) => state.auth.loggedUser);
 
   useEffect(() => {
@@ -73,7 +75,29 @@ export const Signup: React.FC = () => {
 
           const { firstName, lastName, email, password } = data;
 
-          dispatch(signup({ firstName, lastName, email, password }));
+          const onRejected = () => {
+            enqueueSnackbar("Oops, something went wrong", {
+              variant: "error",
+            });
+          };
+          const onSuccess = (args: Record<string, unknown>) => {
+            if (args?.error) {
+              return onRejected();
+            }
+            enqueueSnackbar("Now you can login.", {
+              variant: "success",
+            });
+            navigate("/");
+          };
+
+          dispatch(
+            signup({
+              firstName,
+              lastName,
+              email,
+              password,
+            }),
+          ).then(onSuccess, onRejected);
 
           setSubmitting(false);
         }}

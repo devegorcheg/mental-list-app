@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Form, Formik } from "formik";
-import { object, string } from "yup";
+import { object } from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -20,7 +20,7 @@ import {
 } from "common/validationSchemes";
 
 // types
-import { RootState } from "store";
+import { IAppDispatch, RootState } from "store";
 import { SxProps, Theme } from "@mui/system";
 
 const sxTitle: SxProps<Theme> = {
@@ -39,7 +39,7 @@ const initialValues = {
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<IAppDispatch>();
   const loggedUser = useSelector((state: RootState) => state.auth.loggedUser);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export const Login: React.FC = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async ({ email, password }, { resetForm, setSubmitting }) => {
+        onSubmit={async ({ email, password }, { setSubmitting }) => {
           setSubmitting(true);
           dispatch(login({ email, password }));
           setSubmitting(false);

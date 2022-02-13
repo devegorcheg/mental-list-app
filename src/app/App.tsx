@@ -1,3 +1,5 @@
+import { SnackbarProvider } from "notistack";
+
 // components
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
@@ -14,13 +16,15 @@ export const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Auth>
-        <ErrorBoundary>
-          <AppLayout>
-            <Routes />
-          </AppLayout>
-        </ErrorBoundary>
-      </Auth>
+      <ErrorBoundary>
+        <Auth>
+          <SnackbarProvider maxSnack={3}>
+            <AppLayout>
+              <Routes />
+            </AppLayout>
+          </SnackbarProvider>
+        </Auth>
+      </ErrorBoundary>
     </ThemeProvider>
   );
 };

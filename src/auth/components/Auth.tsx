@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 // components
-import { Loading } from "common/components/Loading";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 // utils
 import { getUser } from "auth/actions";
@@ -19,9 +19,15 @@ export const Auth: React.FC = ({ children }) => {
     // eslint-disable-next-line
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" size={150} />
+      </Backdrop>
+    </>
+  );
 };
