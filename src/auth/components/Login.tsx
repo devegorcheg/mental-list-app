@@ -1,29 +1,41 @@
 import { useEffect } from "react";
-import { useFormik, FormikProvider } from "formik";
+import { Form, Formik } from "formik";
 import { object, string } from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 // components
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import { TextField } from "ui/TextField";
 import { Link } from "ui/Link";
 import { Wrapper } from "./Wrapper";
+import { Button } from "ui/Button";
 
 // utils
 import { login } from "../actions";
+import {
+  password as passwordSchema,
+  email as emailSchema,
+} from "common/validationSchemes";
 
 // types
 import { RootState } from "store";
+import { SxProps, Theme } from "@mui/system";
+
+const sxTitle: SxProps<Theme> = {
+  font: "normal normal bold 24px/27px Comfortaa",
+};
 
 const validationSchema = object({
-  email: string().email().required(),
-  password: string()
-    .min(8, "Password must be at least 8 characters long")
-    .max(25, "Password length must be no more than 25 characters")
-    .required(),
+  email: emailSchema,
+  password: passwordSchema,
 });
+
+const initialValues = {
+  email: "",
+  password: "",
+};
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -36,70 +48,61 @@ export const Login: React.FC = () => {
     }
   }, [loggedUser]);
 
-  const formikCtx = useFormik({
-    validateOnBlur: false,
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema,
-    onSubmit: async ({ email, password }, { resetForm, setSubmitting }) => {
-      setSubmitting(true);
-
-      dispatch(login({ email, password }));
-
-      setSubmitting(false);
-    },
-  });
-
-  const { handleSubmit, isValid, isSubmitting } = formikCtx;
-
   return (
     <Wrapper>
-      <FormikProvider value={formikCtx}>
-        <form onSubmit={handleSubmit}>
-          <Box mb={5}>
-            <Typography align="center" variant="h4">
-              LOG IN
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={async ({ email, password }, { resetForm, setSubmitting }) => {
+          setSubmitting(true);
+          dispatch(login({ email, password }));
+          setSubmitting(false);
+        }}
+      >
+        <Form>
+          <Box mb={9.75}>
+            <Typography align="center" sx={sxTitle}>
+              Sign In
             </Typography>
           </Box>
           <Box mb={3}>
             <TextField
+              variant="standard"
+              placeholder="Email"
               fullWidth
-              variant="outlined"
               name="email"
-              label="Email"
             />
           </Box>
           <Box mb={6}>
             <TextField
+              variant="standard"
+              placeholder="Password"
               fullWidth
               name="password"
               type="password"
-              label="Password"
             />
           </Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Box display="flex" flexDirection="column" alignItems="center">
             <Button
-              disabled={isSubmitting || !isValid}
+              gradient
               variant="contained"
-              color="primary"
               type="submit"
               size="large"
-              sx={{ paddingLeft: 5, paddingRight: 5 }}
+              fullWidth
+              sx={{ maxWidth: "257px" }}
             >
-              Log In
+              Sign In
             </Button>
-            <Typography variant="body1">
-              Don't have an account? <Link to="/signup">Sign Up</Link>
+            <Typography
+              color="textSecondary"
+              variant="body1"
+              sx={{ marginTop: 4.375 }}
+            >
+              <Link to="/signup">Sign Up</Link>
             </Typography>
           </Box>
-        </form>
-      </FormikProvider>
+        </Form>
+      </Formik>
     </Wrapper>
   );
 };

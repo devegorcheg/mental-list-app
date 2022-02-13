@@ -1,11 +1,16 @@
 import { createTheme } from "@mui/material/styles";
-import { deepPurple } from "@mui/material/colors";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: deepPurple[500],
+      main: "#2F80ED",
     },
+    text: {
+      secondary: "#BBBBC7",
+    },
+  },
+  typography: {
+    fontFamily: '"SF-Pro", "Roboto"',
   },
 });
 
