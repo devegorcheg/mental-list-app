@@ -1,31 +1,67 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useFormik, FormikProvider } from "formik";
+import { Formik, Form } from "formik";
 import { object, string } from "yup";
 import { useDispatch, useSelector } from "react-redux";
 
 // components
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import { TextField } from "ui/TextField";
 import { Link } from "ui/Link";
 import { Wrapper } from "./Wrapper";
+import { Button } from "ui/Button";
 
 // utils
 import { signup } from "../actions";
 
 // types
 import { RootState } from "store";
+import { SxProps, Theme } from "@mui/system";
+
+const sxTitle: SxProps<Theme> = {
+  font: "normal normal bold 24px/27px Comfortaa",
+};
+const spacesRegExp = new RegExp("(.*\\s+.*)");
 
 const validationSchema = object({
-  firstName: string().min(3).max(50).required(),
-  lastName: string().min(3).max(50).required(),
-  email: string().email().required(),
+  firstName: string().min(3).max(50).required().label("First name"),
+  lastName: string().min(3).max(50).required().label("Last name"),
+  email: string().email().required().label("E-mail"),
   password: string()
-    .min(8, "Password must be at least 8 characters long")
-    .max(25)
-    .required(),
+    // uppercase
+    .matches(
+      /(.*?[A-Z]){2,}/,
+      "The string must contain at least 2 uppercase alphabetical character",
+    )
+    // number
+    .matches(
+      /.*[0-9].*/,
+      "The string must contain at least 1 numeric character",
+    )
+    // special
+    .matches(
+      /(.*[@$!%*#?&].*)/,
+      "The string must contain at least one special character",
+    )
+    // spaces
+    .test("spaces", "The string must not contain spaces", value => {
+      if (!value) {
+        return true;
+      }
+      return !spacesRegExp.test(value);
+    })
+    .min(8)
+    .required()
+    .label("Password"),
 });
+
+const initialValues = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+};
 
 export const Signup: React.FC = () => {
   const navigate = useNavigate();
@@ -38,75 +74,82 @@ export const Signup: React.FC = () => {
     }
   }, [loggedUser]);
 
-  const formikCtx = useFormik({
-    validateOnBlur: false,
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-    },
-    validationSchema,
-    onSubmit: async (data, { setSubmitting }) => {
-      setSubmitting(true);
-
-      const { firstName, lastName, email, password } = data;
-
-      dispatch(signup({ firstName, lastName, email, password }));
-
-      setSubmitting(false);
-    },
-  });
-
-  const { handleSubmit, isSubmitting } = formikCtx;
-
   return (
     <Wrapper>
-      <FormikProvider value={formikCtx}>
-        <form onSubmit={handleSubmit}>
+      <Formik
+        validateOnBlur={false}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={async (data, { setSubmitting }) => {
+          setSubmitting(true);
+
+          const { firstName, lastName, email, password } = data;
+
+          dispatch(signup({ firstName, lastName, email, password }));
+
+          setSubmitting(false);
+        }}
+      >
+        <Form>
           <Box mb={5}>
-            <Typography align="center" variant="h4">
-              SIGN UP
+            <Typography align="center" sx={sxTitle}>
+              Sign Up
             </Typography>
           </Box>
           <Box mb={3}>
-            <TextField label="First name" fullWidth name="firstName" />
+            <TextField
+              variant="standard"
+              placeholder="First name"
+              fullWidth
+              name="firstName"
+            />
           </Box>
           <Box mb={3}>
-            <TextField label="Last name" fullWidth name="lastName" />
+            <TextField
+              variant="standard"
+              placeholder="Last name"
+              fullWidth
+              name="lastName"
+            />
           </Box>
           <Box mb={3}>
-            <TextField label="E-mail" fullWidth name="email" />
+            <TextField
+              variant="standard"
+              placeholder="E-mail"
+              fullWidth
+              name="email"
+            />
           </Box>
           <Box mb={6}>
             <TextField
-              label="Password"
+              variant="standard"
+              placeholder="Password"
               fullWidth
               type="password"
               name="password"
             />
           </Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Box display="flex" flexDirection="column" alignItems="center">
             <Button
-              disabled={isSubmitting}
-              color="primary"
+              gradient
               variant="contained"
               type="submit"
               size="large"
-              sx={{ paddingLeft: 5, paddingRight: 5 }}
+              fullWidth
+              sx={{ maxWidth: "257px" }}
             >
-              SIGN UP
+              Sign Up
             </Button>
-            <Typography variant="body1">
-              Have an account? <Link to="/login">Log In</Link>
+            <Typography
+              color="textSecondary"
+              variant="body1"
+              sx={{ marginTop: 4.375 }}
+            >
+              I already have an account. <Link to="/login">Sign In</Link>
             </Typography>
           </Box>
-        </form>
-      </FormikProvider>
+        </Form>
+      </Formik>
     </Wrapper>
   );
 };

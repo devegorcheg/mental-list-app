@@ -44,6 +44,17 @@ const SAuthBox = styled(Box)(
   }),
 );
 
+const SAuthContainer = styled(Container)(
+  ({ theme: { breakpoints } }: { theme: Theme }) => ({
+    "&.MuiContainer-root": {
+      maxWidth: "500px",
+      [breakpoints.down("xl")]: {
+        maxWidth: "400px",
+      },
+    },
+  }),
+);
+
 const SLogo = styled(Logo)(({ theme: { spacing } }: { theme: Theme }) => ({
   paddingBottom: spacing(6.25),
 }));
@@ -57,7 +68,7 @@ export const Wrapper: React.FC = ({ children }) => {
         </Box>
       </Hidden>
       <SAuthBox>
-        <Container maxWidth="sm">{children}</Container>
+        <SAuthContainer disableGutters>{children}</SAuthContainer>
       </SAuthBox>
     </Box>
   );
