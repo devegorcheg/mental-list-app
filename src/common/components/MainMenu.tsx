@@ -1,11 +1,16 @@
 import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 // components
 import { IconButton, Menu, MenuItem, Theme } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
+// actions
+import { logout } from "auth/actions";
+
 // types
 import { SystemStyleObject } from "@mui/system";
+import { AppDispatch } from "store";
 
 interface Props {
   sx?: SystemStyleObject<Theme>;
@@ -14,6 +19,7 @@ interface Props {
 export const MainMenu: React.FC<Props> = ({ sx = {} }) => {
   const buttonRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleClick = () => {
     setOpen(prevState => !prevState);
@@ -53,7 +59,15 @@ export const MainMenu: React.FC<Props> = ({ sx = {} }) => {
         sx={{ marginTop: 1 }}
       >
         <MenuItem onClick={handleClose}>Change Password</MenuItem>
-        <MenuItem onClick={handleClose}>Sign Out</MenuItem>
+        <MenuItem
+          key="signout"
+          onClick={() => {
+            handleClose();
+            dispatch(logout());
+          }}
+        >
+          Sign Out
+        </MenuItem>
       </Menu>
     </>
   );
