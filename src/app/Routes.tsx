@@ -3,6 +3,7 @@ import { Routes as RouterRoutes, Route, Navigate } from "react-router-dom";
 // components
 import { Signup } from "auth/components/Signup";
 import { Login } from "auth/components/Login";
+import { ToDoPage } from "toDo/components/ToDoPage";
 import { RequireAuth } from "common/components/RequireAuth";
 
 export const Routes: React.FC = () => {
@@ -15,7 +16,7 @@ export const Routes: React.FC = () => {
         path="/"
         element={
           <RequireAuth>
-            <>HomePage</>
+            <ToDoPage />
           </RequireAuth>
         }
       />
