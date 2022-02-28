@@ -1,14 +1,14 @@
 // types
-import { IAppDispatch } from "store";
-import { IAccountsPassword, IAccountsClient } from "lib/accounts";
+import { AppDispatch } from "store";
+import { AccountsPassword, AccountsClient } from "lib/accounts";
 
 export type Maybe<T> = T | null;
 
 export type ThunkAPI = {
-  dispatch: IAppDispatch;
+  dispatch: AppDispatch;
   extra: {
-    accountsPassword: IAccountsPassword;
-    accountsClient: IAccountsClient;
+    accountsPassword: AccountsPassword;
+    accountsClient: AccountsClient;
   };
   rejectValue: string;
 };

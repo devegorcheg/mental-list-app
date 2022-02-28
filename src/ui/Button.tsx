@@ -24,11 +24,11 @@ const SButton = styled(MButton)(
   }),
 );
 
-interface IProps {
+interface Props {
   gradient?: boolean;
 }
 
-export const Button: React.FC<IProps & ButtonProps> = ({
+export const Button: React.FC<Props & ButtonProps> = ({
   children,
   ...props
 }) => {

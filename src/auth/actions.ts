@@ -4,14 +4,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Maybe, ThunkAPI } from "models/types";
 import { User as IUser } from "@accounts/types";
 
-interface ISingup {
+interface Singup {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
 }
 
-export const signup = createAsyncThunk<Maybe<string>, ISingup, ThunkAPI>(
+export const signup = createAsyncThunk<Maybe<string>, Singup, ThunkAPI>(
   "auth/signup",
   async (
     { firstName, lastName, email, password },
@@ -35,12 +35,12 @@ export const signup = createAsyncThunk<Maybe<string>, ISingup, ThunkAPI>(
   },
 );
 
-interface ILogin {
+interface Login {
   email: string;
   password: string;
 }
 
-export const login = createAsyncThunk<IUser, ILogin, ThunkAPI>(
+export const login = createAsyncThunk<IUser, Login, ThunkAPI>(
   "auth/login",
   async (
     { email, password },

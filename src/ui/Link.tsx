@@ -16,11 +16,11 @@ const SLink = styled(RouterLink)(
   }),
 );
 
-interface IProps {
+interface Props {
   noDecoration?: boolean;
 }
 
-export const Link: React.FC<LinkProps & IProps> = ({
+export const Link: React.FC<LinkProps & Props> = ({
   noDecoration,
   ...props
 }) => {

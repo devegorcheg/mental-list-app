@@ -20,7 +20,7 @@ import {
 } from "common/validationSchemes";
 
 // types
-import { IAppDispatch, RootState } from "store";
+import { AppDispatch, RootState } from "store";
 import { SxProps, Theme } from "@mui/system";
 
 const sxTitle: SxProps<Theme> = {
@@ -39,7 +39,7 @@ const initialValues = {
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<IAppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
   const loggedUser = useSelector((state: RootState) => state.auth.loggedUser);
 
   useEffect(() => {
