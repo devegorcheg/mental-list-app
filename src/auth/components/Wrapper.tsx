@@ -1,6 +1,6 @@
 // component
 import { Box, Container, Hidden } from "@mui/material";
-import { Logo } from "./Icons/Logo";
+import { Logo } from "common/components/Icons/Logo";
 
 // utils
 import { styled, SxProps, Theme } from "@mui/system";
