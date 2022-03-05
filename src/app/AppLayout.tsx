@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
 
 import { Drawer } from "app/Drawer";
+import { Logo } from "common/components/Icons/Logo";
 
 // utils
 import { styled } from "@mui/material/styles";
@@ -24,7 +25,11 @@ export const AppLayout: React.FC = ({ children }) => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Drawer />
+      <Drawer>
+        <Box>
+          <Logo width={100} />
+        </Box>
+      </Drawer>
       <Main>{children}</Main>
     </Box>
   );
