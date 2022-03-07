@@ -5,15 +5,15 @@ import { signup, login, logout, getUser } from "./actions";
 
 // types
 import { Maybe } from "models/types";
-import { User as IUser } from "@accounts/types";
+import { User } from "@accounts/types";
 
-interface IInitialState {
+interface InitialState {
   loading: boolean;
   error: Maybe<string>;
-  loggedUser: Maybe<IUser>;
+  loggedUser: Maybe<User>;
 }
 
-const initialState: IInitialState = {
+const initialState: InitialState = {
   loading: true,
   error: null,
   loggedUser: null,

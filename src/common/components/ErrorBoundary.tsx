@@ -2,12 +2,12 @@ import { Component } from "react";
 
 import { Box, Divider, Typography } from "@mui/material";
 
-interface IState {
+interface State {
   error: Error | null;
   errorInfo: any;
 }
 
-export default class ErrorBoundary extends Component<any, IState> {
+export default class ErrorBoundary extends Component<any, State> {
   constructor(props: any) {
     super(props);
     this.state = { errorInfo: null, error: null };

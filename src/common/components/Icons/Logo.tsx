@@ -1,10 +1,10 @@
-interface IProps {
-  width?: string;
-  height?: string;
+interface Props {
+  width?: string | number;
+  height?: string | number;
   className?: string;
 }
 
-export const Logo: React.FC<IProps> = ({ width, height, className }) => (
+export const Logo: React.FC<Props> = ({ width, height, className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     height={height}

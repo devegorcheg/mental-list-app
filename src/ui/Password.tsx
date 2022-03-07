@@ -4,12 +4,12 @@ import { useState } from "react";
 import { Visibility } from "common/components/Visibility";
 import { TextField } from "./TextField";
 
-interface IProps {
+interface Props {
   name: string;
   placeholder?: string;
 }
 
-export const Password: React.FC<IProps> = ({ name, placeholder }) => {
+export const Password: React.FC<Props> = ({ name, placeholder }) => {
   const [showPassword, setShowing] = useState(false);
 
   return (
