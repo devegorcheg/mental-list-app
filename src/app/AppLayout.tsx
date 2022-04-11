@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 
 import { Drawer } from "app/Drawer";
 import { Logo } from "common/components/Icons/Logo";
+import { Priorities } from "priorities/components/Priorities";
 
 // utils
 import { styled } from "@mui/material/styles";
@@ -28,6 +29,9 @@ export const AppLayout: React.FC = ({ children }) => {
       <Drawer>
         <Box>
           <Logo width={100} />
+        </Box>
+        <Box mt={3}>
+          <Priorities />
         </Box>
       </Drawer>
       <Main>{children}</Main>
