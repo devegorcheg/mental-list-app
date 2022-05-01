@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // actions
-import { getPriorities, setFilter, setSort } from "./actions";
+import { addPriorities, getPriorities, setFilter, setSort } from "./actions";
 
 // types
 import { Maybe } from "models/types";
@@ -36,6 +36,7 @@ export const prioritiesReducer = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
+    // getPriorities
     builder.addCase(getPriorities.pending, state => {
       state.list = [];
     });
@@ -43,9 +44,18 @@ export const prioritiesReducer = createSlice({
       state.list = [...action.payload];
     });
     builder.addCase(getPriorities.rejected, (_, action) => {
-      console.error(
-        action?.payload ?? action.error.message ?? "Приоритеты не найдены",
-      );
+      console.error(action?.payload ?? action.error.message ?? "Error");
+    });
+
+    // addPriorities
+    builder.addCase(addPriorities.pending, state => {
+      state.list = [];
+    });
+    builder.addCase(addPriorities.fulfilled, (state, action) => {
+      state.list = [...action.payload];
+    });
+    builder.addCase(addPriorities.rejected, (_, action) => {
+      console.error(action?.payload ?? action.error.message ?? "Error");
     });
 
     builder.addCase(setFilter, (state, action) => {
