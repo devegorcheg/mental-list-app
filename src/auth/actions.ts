@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // types
 import { Maybe, ThunkAPI } from "models/types";
-import { User as IUser } from "@accounts/types";
+import { User } from "@accounts/types";
 
 interface Singup {
   firstName: string;
@@ -40,7 +40,7 @@ interface Login {
   password: string;
 }
 
-export const login = createAsyncThunk<IUser, Login, ThunkAPI>(
+export const login = createAsyncThunk<User, Login, ThunkAPI>(
   "auth/login",
   async (
     { email, password },
@@ -63,7 +63,7 @@ export const login = createAsyncThunk<IUser, Login, ThunkAPI>(
 );
 
 export const getUser = createAsyncThunk<
-  Maybe<IUser>,
+  Maybe<User>,
   Maybe<undefined>,
   ThunkAPI
 >("auth/getUser", async (_, { extra: { accountsClient }, rejectWithValue }) => {
@@ -77,7 +77,7 @@ export const getUser = createAsyncThunk<
           Authorization: tokens ? "Bearer " + tokens.accessToken : "",
         },
       });
-      const user: IUser = await res.json();
+      const user: User = await res.json();
 
       return user;
     }
