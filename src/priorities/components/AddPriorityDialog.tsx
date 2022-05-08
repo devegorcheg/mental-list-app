@@ -1,5 +1,6 @@
 import { Form, Formik } from "formik";
 import { object, string, number } from "yup";
+import { useDispatch } from "react-redux";
 
 // components
 import {
@@ -15,8 +16,12 @@ import { red } from "@mui/material/colors";
 import { TextField } from "ui/TextField";
 import { ColorPicker } from "common/components/ColorPicker";
 
+// utils
+import { addPriorities } from "priorities/actions";
+
 // types
 import { SxProps, Theme } from "@mui/system";
+import { AppDispatch } from "store";
 
 interface Props {
   open: boolean;
@@ -28,6 +33,7 @@ const sxDialogContent: SxProps<Theme> = () => ({
   flexDirection: "column",
 });
 
+const defaultColor = { shade: "500", color: red };
 const initialValues = { title: "", priority: 1, color: red[500] };
 
 const validationSchema = object({
@@ -37,12 +43,16 @@ const validationSchema = object({
 });
 
 export const AddPriorityDialog: React.FC<Props> = ({ open, toggleOpen }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
     <Dialog open={open} onClose={toggleOpen}>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async () => {
+        onSubmit={data => {
+          dispatch(addPriorities(data));
+
           toggleOpen();
         }}
       >
@@ -55,6 +65,7 @@ export const AddPriorityDialog: React.FC<Props> = ({ open, toggleOpen }) => {
                 name="title"
                 placeholder="Title"
                 fullWidth
+                fastField
                 variant="standard"
                 margin="dense"
               />
@@ -62,6 +73,7 @@ export const AddPriorityDialog: React.FC<Props> = ({ open, toggleOpen }) => {
                 name="priority"
                 placeholder="Priority"
                 type="number"
+                fastField
                 variant="standard"
                 margin="dense"
                 InputLabelProps={{
@@ -70,7 +82,7 @@ export const AddPriorityDialog: React.FC<Props> = ({ open, toggleOpen }) => {
               />
               <Box mt={2}>
                 <ColorPicker
-                  defaultColor={{ shade: "500", color: red }}
+                  defaultColor={defaultColor}
                   onClick={color => setFieldValue("color", color)}
                 />
               </Box>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 // components
 import { Box, Slider, Typography } from "@mui/material";
@@ -28,6 +29,8 @@ const formatedShadeRevers: Record<string, number> = {
   A700: 1300,
 };
 
+const getShade = (shade: string) => formatedShadeRevers[shade] ?? Number(shade);
+
 const valueLabelFormat = (value: number) => {
   return formatedShade[value] ?? `${value}`;
 };
@@ -38,19 +41,23 @@ export const ColorPicker: React.FC<Props> = ({
 }) => {
   const [currentColor, setCurrentColor] = useState({
     ...defaultColor,
-    shade:
-      formatedShadeRevers[defaultColor.shade] ?? defaultColor.shade ?? "500",
+    shade: getShade(defaultColor.shade),
   });
+
+  const handleClick = useDebouncedCallback(
+    (color: string) => onClick?.(color),
+    500,
+  );
 
   const handleChangeShade = (_: Event, newValue: number | number[]) => {
     if (typeof newValue === "number") {
       setCurrentColor(({ color }) => ({ color, shade: newValue }));
-      onClick?.(currentColor.color[newValue]);
+      handleClick(currentColor.color[newValue]);
     }
   };
   const handleChangeColor = (color: Color) => {
     setCurrentColor(({ shade }) => ({ color, shade }));
-    onClick?.(color[currentColor.shade]);
+    handleClick(color[currentColor.shade]);
   };
 
   return (
