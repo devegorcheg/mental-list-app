@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 // components
-import { IconButton, Popover, TextField } from "@mui/material";
+import { IconButton, Popover, SxProps, TextField, Theme } from "@mui/material";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
@@ -11,6 +11,7 @@ import { styled } from "@mui/material/styles";
 interface Props {
   value: Date | null;
   onChange: (date: Date | null) => void;
+  sx?: SxProps<Theme>;
 }
 
 const SIconButton = styled(IconButton, {
@@ -19,7 +20,7 @@ const SIconButton = styled(IconButton, {
   ...(open && { color: theme.palette.primary.main }),
 }));
 
-export const DatePickerButton: React.FC<Props> = ({ value, onChange }) => {
+export const DatePickerButton: React.FC<Props> = ({ value, onChange, sx }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const open = Boolean(anchorEl);
@@ -34,6 +35,7 @@ export const DatePickerButton: React.FC<Props> = ({ value, onChange }) => {
         onClick={handleClick}
         size="small"
         open={open}
+        sx={sx}
         aria-describedby="date-picker-popover"
       >
         <CalendarTodayIcon />
