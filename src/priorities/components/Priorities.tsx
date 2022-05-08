@@ -1,34 +1,51 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 // components
-import { Box, Typography } from "@mui/material";
-import { ExpandButton } from "common/components/ExpandButton";
+import { Box } from "@mui/material";
+
+import { PriorityItem } from "./PriorityItem";
+import { AddPriority } from "./AddPriority";
+import { Sorting } from "./Sorting";
+
+// utils
+import { getPriorities, setFilter } from "priorities/actions";
 
 // types
-import { SxProps, Theme } from "@mui/system";
-
-const sxBox: SxProps<Theme> = {
-  display: "flex",
-  alignItems: "center",
-};
-
-const sxTitle: SxProps<Theme> = ({ palette, spacing }) => ({
-  color: palette.primary.contrastText,
-  fontSize: "20px",
-  lineHeight: "24px",
-  fontWeight: "medium",
-  marginRight: spacing(1),
-});
+import { AppDispatch, RootState } from "store";
+import { Maybe } from "models/types";
 
 export const Priorities: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { list, filter } = useSelector((state: RootState) => state.priorities);
 
-  const handleClick = useCallback(() => setOpen(v => !v), [setOpen]);
+  const handleFilter = useCallback(
+    (id: Maybe<string>) => dispatch(setFilter(id)),
+    [dispatch],
+  );
+
+  useEffect(() => {
+    dispatch(getPriorities());
+  }, []);
 
   return (
-    <Box sx={sxBox}>
-      <Typography sx={sxTitle}>Priority</Typography>
-      <ExpandButton size="small" open={open} onClick={handleClick} />
-    </Box>
+    <>
+      <Sorting />
+
+      <Box mt={3}>
+        <PriorityItem title="All" isActive={!filter} onClick={handleFilter} />
+        {list.map(({ _id, title }) => (
+          <PriorityItem
+            key={_id}
+            id={_id}
+            title={title}
+            isActive={filter === _id}
+            onClick={handleFilter}
+          />
+        ))}
+      </Box>
+
+      <AddPriority />
+    </>
   );
 };

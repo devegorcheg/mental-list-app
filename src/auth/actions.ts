@@ -1,8 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+// utils
+import { request } from "lib/api";
+
 // types
 import { Maybe, ThunkAPI } from "models/types";
-import { User as IUser } from "@accounts/types";
+import { User } from "@accounts/types";
 
 interface Singup {
   firstName: string;
@@ -40,7 +43,7 @@ interface Login {
   password: string;
 }
 
-export const login = createAsyncThunk<IUser, Login, ThunkAPI>(
+export const login = createAsyncThunk<User, Login, ThunkAPI>(
   "auth/login",
   async (
     { email, password },
@@ -63,26 +66,14 @@ export const login = createAsyncThunk<IUser, Login, ThunkAPI>(
 );
 
 export const getUser = createAsyncThunk<
-  Maybe<IUser>,
+  Maybe<User>,
   Maybe<undefined>,
   ThunkAPI
->("auth/getUser", async (_, { extra: { accountsClient }, rejectWithValue }) => {
+>("auth/getUser", async (_, { rejectWithValue }) => {
   try {
-    // refresh the session to get a new accessToken if expired
-    const tokens = await accountsClient.refreshSession();
+    const res = await request("/api/user");
 
-    if (tokens) {
-      const res = await fetch("/api/user", {
-        headers: {
-          Authorization: tokens ? "Bearer " + tokens.accessToken : "",
-        },
-      });
-      const user: IUser = await res.json();
-
-      return user;
-    }
-
-    return null;
+    return res.json();
   } catch (error: any) {
     console.error(error);
     return rejectWithValue(error);

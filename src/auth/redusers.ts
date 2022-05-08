@@ -78,7 +78,6 @@ export const authReducer = createSlice({
       state.loading = false;
       state.error =
         action?.payload ?? action.error.message ?? "Неизвестная ошибка";
-      console.log(action);
     });
   },
 });

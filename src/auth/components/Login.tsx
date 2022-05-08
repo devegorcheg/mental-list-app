@@ -53,10 +53,8 @@ export const Login: React.FC = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async ({ email, password }, { setSubmitting }) => {
-          setSubmitting(true);
+        onSubmit={({ email, password }) => {
           dispatch(login({ email, password }));
-          setSubmitting(false);
         }}
       >
         <Form>
