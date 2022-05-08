@@ -1,4 +1,4 @@
-import { useField } from "formik";
+import { Field, FastField, FieldProps } from "formik";
 
 // components
 import MTextField, { TextFieldProps } from "@mui/material/TextField";
@@ -17,8 +17,11 @@ const STextField = styled(MTextField)(
   }),
 );
 
-export const TextField: React.FC<TextFieldProps> = props => {
-  const [field, meta] = useField(props as any);
+const InnerTextField: React.FC<TextFieldProps & FieldProps<string>> = ({
+  field,
+  meta,
+  ...props
+}) => {
   const { error, touched } = meta;
 
   return (
@@ -29,5 +32,21 @@ export const TextField: React.FC<TextFieldProps> = props => {
       error={touched && !!error}
       helperText={(touched && error) || " "}
     />
+  );
+};
+
+export const TextField: React.FC<TextFieldProps & { fastField?: boolean }> = ({
+  name,
+  fastField,
+  ...props
+}) => {
+  const FieldComponent = fastField ? FastField : Field;
+
+  return (
+    <FieldComponent name={name}>
+      {(fieldProps: FieldProps<string>) => (
+        <InnerTextField {...fieldProps} name={name} {...props} />
+      )}
+    </FieldComponent>
   );
 };
