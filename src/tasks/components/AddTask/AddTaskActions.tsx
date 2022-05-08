@@ -3,6 +3,7 @@ import { Field, FieldProps } from "formik";
 // components
 import { Box, Button } from "@mui/material";
 import { DatePickerButton } from "common/components/DatePickerButton";
+import { TimePickerButton } from "common/components/TimePickerButton";
 
 export const AddTaskActions: React.FC = () => {
   return (
@@ -10,10 +11,18 @@ export const AddTaskActions: React.FC = () => {
       <Box display="flex">
         <Field name="dueDate">
           {({ field, form }: FieldProps<Date>) => (
-            <DatePickerButton
-              value={field.value}
-              onChange={date => form.setFieldValue("dueDate", date)}
-            />
+            <Box mx={-1}>
+              <DatePickerButton
+                value={field.value}
+                onChange={date => form.setFieldValue("dueDate", date)}
+                sx={{ marginX: 1 }}
+              />
+              <TimePickerButton
+                value={field.value}
+                onChange={date => form.setFieldValue("dueDate", date)}
+                sx={{ marginX: 1 }}
+              />
+            </Box>
           )}
         </Field>
       </Box>
