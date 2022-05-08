@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 // components
-import { IconButton, Popover, Box, Button, TextField } from "@mui/material";
+import { IconButton, Popover, TextField } from "@mui/material";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
