@@ -1,4 +1,4 @@
-import { Field, FieldProps } from "formik";
+import { Field, FieldProps, useFormikContext } from "formik";
 
 // components
 import { Box, Button, Typography } from "@mui/material";
@@ -8,6 +8,8 @@ import { TimePickerButton } from "common/components/TimePickerButton";
 import { PriorityButton } from "./PriorityButton";
 
 export const AddTaskActions: React.FC = () => {
+  const formik = useFormikContext();
+
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
       <Box display="flex" mx={-1}>
@@ -31,7 +33,11 @@ export const AddTaskActions: React.FC = () => {
         <PriorityButton sx={{ marginX: 1 }} />
       </Box>
 
-      <Button sx={{ marginRight: -1.5, textTransform: "none" }} type="submit">
+      <Button
+        sx={{ marginRight: -1.5, textTransform: "none" }}
+        type="submit"
+        disabled={formik.isSubmitting}
+      >
         <Typography variant="body1" sx={{ fontWeight: 500 }}>
           Send
         </Typography>

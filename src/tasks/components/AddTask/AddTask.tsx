@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useFormik, Form, FormikProvider } from "formik";
 import { object, string, date } from "yup";
 
@@ -8,9 +8,12 @@ import { Box } from "@mui/material";
 import { AddTaskActions } from "./AddTaskActions";
 import { TextField } from "ui/TextField";
 
+// utils
+import { addTask } from "tasks/actions";
+
 // types
 import { SxProps, Theme } from "@mui/system";
-import { RootState } from "store";
+import { RootState, AppDispatch } from "store";
 
 const initialValues = { title: "", priority: "", dueDate: new Date() };
 
@@ -30,12 +33,20 @@ const sxBox: SxProps<Theme> = () => ({
 
 export const AddTask: React.FC = () => {
   const priorities = useSelector((state: RootState) => state.priorities.list);
+  const dispatch = useDispatch<AppDispatch>();
 
   const formik = useFormik({
     initialValues: { ...initialValues, priority: priorities[0]?._id ?? "" },
     enableReinitialize: true,
     validationSchema,
-    onSubmit: data => console.log(data),
+    onSubmit: (data, { setSubmitting, resetForm }) => {
+      setSubmitting(true);
+
+      dispatch(addTask(data)).then(() => {
+        setSubmitting(false);
+        resetForm();
+      });
+    },
   });
 
   return (
