@@ -17,7 +17,7 @@ interface Props {
 const SIconButton = styled(IconButton, {
   shouldForwardProp: propName => propName !== "open",
 })<{ open?: boolean }>(({ theme, open }) => ({
-  ...(open && { color: theme.palette.primary.main }),
+  color: open ? theme.palette.primary.main : theme.palette.text.secondary,
 }));
 
 export const TimePickerButton: React.FC<Props> = ({ value, onChange, sx }) => {
