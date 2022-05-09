@@ -1,17 +1,19 @@
 import { Field, FieldProps } from "formik";
 
 // components
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+
 import { DatePickerButton } from "common/components/DatePickerButton";
 import { TimePickerButton } from "common/components/TimePickerButton";
+import { PriorityButton } from "./PriorityButton";
 
 export const AddTaskActions: React.FC = () => {
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Box display="flex">
+      <Box display="flex" mx={-1}>
         <Field name="dueDate">
           {({ field, form }: FieldProps<Date>) => (
-            <Box mx={-1}>
+            <>
               <DatePickerButton
                 value={field.value}
                 onChange={date => form.setFieldValue("dueDate", date)}
@@ -22,13 +24,17 @@ export const AddTaskActions: React.FC = () => {
                 onChange={date => form.setFieldValue("dueDate", date)}
                 sx={{ marginX: 1 }}
               />
-            </Box>
+            </>
           )}
         </Field>
+
+        <PriorityButton sx={{ marginX: 1 }} />
       </Box>
 
       <Button sx={{ marginRight: -1.5, textTransform: "none" }} type="submit">
-        Send
+        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+          Send
+        </Typography>
       </Button>
     </Box>
   );
