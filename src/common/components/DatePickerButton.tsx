@@ -17,7 +17,7 @@ interface Props {
 const SIconButton = styled(IconButton, {
   shouldForwardProp: propName => propName !== "open",
 })<{ open?: boolean }>(({ theme, open }) => ({
-  ...(open && { color: theme.palette.primary.main }),
+  color: open ? theme.palette.primary.main : theme.palette.text.secondary,
 }));
 
 export const DatePickerButton: React.FC<Props> = ({ value, onChange, sx }) => {
@@ -25,14 +25,14 @@ export const DatePickerButton: React.FC<Props> = ({ value, onChange, sx }) => {
 
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(anchorEl => (anchorEl ? null : event.currentTarget));
-  };
+  const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) =>
+    setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
 
   return (
     <>
       <SIconButton
-        onClick={handleClick}
+        onClick={handleOpen}
         size="small"
         open={open}
         sx={sx}
@@ -45,7 +45,7 @@ export const DatePickerButton: React.FC<Props> = ({ value, onChange, sx }) => {
         id="date-picker-popover"
         open={open}
         anchorEl={anchorEl}
-        onClose={handleClick}
+        onClose={handleClose}
         PaperProps={{ sx: { height: "295px", overflow: "hidden" } }}
         anchorOrigin={{
           vertical: "top",
