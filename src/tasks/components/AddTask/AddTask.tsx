@@ -23,12 +23,13 @@ const validationSchema = object({
   dueDate: date().required(),
 });
 
-const sxBox: SxProps<Theme> = () => ({
+const sxBox: SxProps<Theme> = theme => ({
   position: "fixed",
   left: 0,
   bottom: 0,
   paddingLeft: "240px",
   width: "100%",
+  background: theme.palette.common.white,
 });
 
 export const AddTask: React.FC = () => {
@@ -38,6 +39,8 @@ export const AddTask: React.FC = () => {
   const formik = useFormik({
     initialValues: { ...initialValues, priority: priorities[0]?._id ?? "" },
     enableReinitialize: true,
+    validateOnChange: false,
+    validateOnBlur: false,
     validationSchema,
     onSubmit: (data, { setSubmitting, resetForm }) => {
       setSubmitting(true);
