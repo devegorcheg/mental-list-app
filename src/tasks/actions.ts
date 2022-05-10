@@ -4,7 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { request } from "lib/api";
 
 // types
-import { ThunkAPI } from "models/types";
+import { Maybe, ThunkAPI } from "models/types";
 import { Task } from "./redusers";
 
 interface AddTask {
@@ -24,6 +24,20 @@ export const addTask = createAsyncThunk<Task[], AddTask, ThunkAPI>(
           "Content-Type": "application/json",
         },
       });
+
+      return resp.json();
+    } catch (error: any) {
+      console.error(error);
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const getTasks = createAsyncThunk<Task[], Maybe<undefined>, ThunkAPI>(
+  "tasks/getTasks",
+  async (_, { rejectWithValue }) => {
+    try {
+      const resp = await request("/api/tasks");
 
       return resp.json();
     } catch (error: any) {

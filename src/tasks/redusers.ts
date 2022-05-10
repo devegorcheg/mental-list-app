@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // actions
-import { addTask } from "./actions";
+import { addTask, getTasks } from "./actions";
 
 export interface Task {
   _id: string;
@@ -9,7 +9,7 @@ export interface Task {
   description: string;
   priority: string;
   owner: string;
-  dueDate: Date;
+  dueDate: string;
   done: boolean;
 }
 
@@ -26,6 +26,15 @@ export const tasksReducer = createSlice({
       state.push(...action.payload);
     });
     builder.addCase(addTask.rejected, (_, action) => {
+      console.error(action?.payload ?? action.error.message ?? "Error");
+    });
+
+    // get tasks
+    builder.addCase(getTasks.fulfilled, (state, action) => {
+      state.length = 0;
+      state.push(...action.payload);
+    });
+    builder.addCase(getTasks.rejected, (_, action) => {
       console.error(action?.payload ?? action.error.message ?? "Error");
     });
   },

@@ -1,13 +1,28 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 // components
 import { Box } from "@mui/material";
 
-import { MainMenu } from "common/components/MainMenu";
+import { TasksList } from "./TasksList";
 import { AddTask } from "./AddTask";
 
+// utils
+import { getTasks } from "tasks/actions";
+
+// types
+import { AppDispatch } from "store";
+
 export const TasksPage: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(getTasks());
+  }, []);
+
   return (
-    <Box sx={{ position: "relative" }}>
-      <MainMenu sx={{ position: "absolute", top: 26, right: 26 }} />
+    <Box>
+      <TasksList />
       <AddTask />
     </Box>
   );
