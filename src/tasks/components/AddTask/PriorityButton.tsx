@@ -11,7 +11,8 @@ import {
   SxProps,
   Theme,
 } from "@mui/material";
-import CircleIcon from "@mui/icons-material/Circle";
+
+import { CircleIcon } from "common/components/CircleIcon";
 
 // utils
 import { styled } from "@mui/material/styles";
@@ -53,12 +54,6 @@ const SIconButton = styled(IconButton)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const SCircleIcon = styled(CircleIcon, {
-  shouldForwardProp: propName => propName !== "background",
-})<{ background?: string }>(({ theme, background }) => ({
-  color: background ?? theme.palette.text.secondary,
-}));
-
 export const PriorityButton: React.FC<Props> = ({ sx }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const priorities = useSelector((state: RootState) => state.priorities.list);
@@ -86,7 +81,7 @@ export const PriorityButton: React.FC<Props> = ({ sx }) => {
         sx={sx}
         aria-describedby="priority-picker-popover"
       >
-        <SCircleIcon background={prioritiesMap[field.value]?.color} />
+        <CircleIcon background={prioritiesMap[field.value]?.color} />
         {open ? <Box sx={sxBox} /> : null}
       </SIconButton>
       <Popover
@@ -111,7 +106,7 @@ export const PriorityButton: React.FC<Props> = ({ sx }) => {
               sx={sxPriorityBox}
               onClick={() => actions.setValue(_id)}
             >
-              <SCircleIcon fontSize="small" background={color} />
+              <CircleIcon fontSize="small" background={color} />
               <Typography variant="body1" sx={sxTypography}>
                 {title}
               </Typography>
