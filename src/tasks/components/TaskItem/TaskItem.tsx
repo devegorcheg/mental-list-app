@@ -9,6 +9,7 @@ import { Priority as IPriority } from "priorities/redusers";
 
 interface Props {
   title: string;
+  description?: string;
   done: boolean;
   priority: IPriority;
   dueDate: string;
@@ -17,6 +18,7 @@ interface Props {
 
 export const TaskItem: React.FC<Props> = ({
   title,
+  description,
   done,
   priority,
   dueDate,
@@ -33,7 +35,7 @@ export const TaskItem: React.FC<Props> = ({
             {title}
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            {title}
+            {description ?? "Enter description…"}
           </Typography>
 
           <Box display="flex" pt={2.5}>

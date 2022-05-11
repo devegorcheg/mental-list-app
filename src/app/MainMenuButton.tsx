@@ -16,7 +16,7 @@ interface Props {
   sx?: SystemStyleObject<Theme>;
 }
 
-export const MainMenu: React.FC<Props> = ({ sx = {} }) => {
+export const MainMenuButton: React.FC<Props> = ({ sx = {} }) => {
   const buttonRef = useRef(null);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -31,6 +31,10 @@ export const MainMenu: React.FC<Props> = ({ sx = {} }) => {
   return (
     <>
       <IconButton
+        id="demo-positioned-button"
+        aria-controls={open ? "demo-positioned-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
         ref={buttonRef}
         onClick={handleClick}
         sx={[
@@ -45,9 +49,12 @@ export const MainMenu: React.FC<Props> = ({ sx = {} }) => {
         <MoreVertIcon sx={{ fontSize: "37px", color: "white" }} />
       </IconButton>
       <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
         anchorEl={buttonRef.current}
         open={open}
         onClose={handleClose}
+        disablePortal
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",
