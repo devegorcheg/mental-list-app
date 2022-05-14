@@ -25,10 +25,10 @@ const validationSchema = object({
 
 const sxBox: SxProps<Theme> = theme => ({
   position: "fixed",
-  left: 0,
+  left: "auto",
+  right: 0,
   bottom: 0,
-  paddingLeft: "240px",
-  width: "100%",
+  width: "calc(100% - 240px)",
   background: theme.palette.common.white,
 });
 
@@ -53,7 +53,7 @@ export const AddTask: React.FC = () => {
   });
 
   return (
-    <Box sx={sxBox}>
+    <Box sx={sxBox} className="mui-fixed">
       <FormikProvider value={formik}>
         <Form>
           <Box px={6.25} py={2}>

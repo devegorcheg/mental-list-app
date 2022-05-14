@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 // components
-import { IconButton, Menu, MenuItem, Theme } from "@mui/material";
+import { Box, IconButton, Menu, MenuItem, Theme } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 // actions
@@ -29,12 +29,8 @@ export const MainMenuButton: React.FC<Props> = ({ sx = {} }) => {
   };
 
   return (
-    <>
+    <Box sx={sx} className="mui-fixed">
       <IconButton
-        id="demo-positioned-button"
-        aria-controls={open ? "demo-positioned-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
         ref={buttonRef}
         onClick={handleClick}
         sx={[
@@ -43,14 +39,11 @@ export const MainMenuButton: React.FC<Props> = ({ sx = {} }) => {
             background:
               "transparent linear-gradient(18deg, #56CCF2 0%, #2F80ED 100%) 0% 0% no-repeat padding-box",
           },
-          sx,
         ]}
       >
         <MoreVertIcon sx={{ fontSize: "37px", color: "white" }} />
       </IconButton>
       <Menu
-        id="demo-positioned-menu"
-        aria-labelledby="demo-positioned-button"
         anchorEl={buttonRef.current}
         open={open}
         onClose={handleClose}
@@ -76,6 +69,6 @@ export const MainMenuButton: React.FC<Props> = ({ sx = {} }) => {
           Sign Out
         </MenuItem>
       </Menu>
-    </>
+    </Box>
   );
 };
