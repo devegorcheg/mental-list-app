@@ -3,6 +3,7 @@ import { combineReducers, configureStore, AnyAction } from "@reduxjs/toolkit";
 // reducers
 import { authReducer } from "auth/redusers";
 import { prioritiesReducer } from "priorities/redusers";
+import { tasksReducer } from "tasks/redusers";
 
 // utils
 import { accountsPassword, accountsClient } from "lib/accounts";
@@ -10,6 +11,7 @@ import { accountsPassword, accountsClient } from "lib/accounts";
 const rootReducer = combineReducers({
   auth: authReducer.reducer,
   priorities: prioritiesReducer.reducer,
+  tasks: tasksReducer.reducer,
 });
 
 const resettableRootReducer = (state: any, action: AnyAction) => {

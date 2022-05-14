@@ -3,9 +3,10 @@ import { useSelector } from "react-redux";
 // components
 import { Box } from "@mui/material";
 
-import { Drawer } from "app/Drawer";
+import { Drawer } from "./Drawer";
 import { Logo } from "common/components/Icons/Logo";
 import { Priorities } from "priorities/components/Priorities";
+import { MainMenuButton } from "./MainMenuButton";
 
 // utils
 import { styled } from "@mui/material/styles";
@@ -34,7 +35,10 @@ export const AppLayout: React.FC = ({ children }) => {
           <Priorities />
         </Box>
       </Drawer>
-      <Main>{children}</Main>
+      <Main>
+        <MainMenuButton sx={{ position: "fixed", top: 26, right: 26 }} />
+        {children}
+      </Main>
     </Box>
   );
 };
