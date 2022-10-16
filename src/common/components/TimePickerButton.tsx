@@ -46,7 +46,6 @@ export const TimePickerButton: React.FC<Props> = ({ value, onChange, sx }) => {
         open={open}
         anchorEl={anchorEl}
         onClose={handleClick}
-        PaperProps={{ sx: { height: "372px", overflow: "hidden" } }}
         anchorOrigin={{
           vertical: "top",
           horizontal: "left",

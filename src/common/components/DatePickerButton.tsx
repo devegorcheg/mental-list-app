@@ -46,7 +46,6 @@ export const DatePickerButton: React.FC<Props> = ({ value, onChange, sx }) => {
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        PaperProps={{ sx: { height: "295px", overflow: "hidden" } }}
         anchorOrigin={{
           vertical: "top",
           horizontal: "left",
