@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useField } from "formik";
+import { useFormContext, useWatch } from "react-hook-form";
 
 // components
 import {
@@ -20,6 +20,7 @@ import { styled } from "@mui/material/styles";
 // types
 import { RootState } from "store";
 import { Priority } from "priorities/redusers";
+import { FormData } from "./AddTask";
 
 interface Props {
   sx?: SxProps<Theme>;
@@ -57,7 +58,8 @@ const SIconButton = styled(IconButton)(({ theme }) => ({
 export const PriorityButton: React.FC<Props> = ({ sx }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const priorities = useSelector((state: RootState) => state.priorities.list);
-  const [field, , actions] = useField("priority");
+  const { control, setValue } = useFormContext<FormData>();
+  const priority = useWatch({ control, name: "priority" });
 
   const prioritiesMap = useMemo(
     () =>
@@ -81,9 +83,10 @@ export const PriorityButton: React.FC<Props> = ({ sx }) => {
         sx={sx}
         aria-describedby="priority-picker-popover"
       >
-        <CircleIcon background={prioritiesMap[field.value]?.color} />
+        <CircleIcon background={prioritiesMap[priority]?.color} />
         {open ? <Box sx={sxBox} /> : null}
       </SIconButton>
+
       <Popover
         id="date-picker-popover"
         open={open}
@@ -104,7 +107,7 @@ export const PriorityButton: React.FC<Props> = ({ sx }) => {
             <Box
               key={_id}
               sx={sxPriorityBox}
-              onClick={() => actions.setValue(_id)}
+              onClick={() => setValue("priority", _id)}
             >
               <CircleIcon fontSize="small" background={color} />
               <Typography variant="body1" sx={sxTypography}>

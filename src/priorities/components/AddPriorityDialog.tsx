@@ -1,19 +1,21 @@
-import { Form, Formik } from "formik";
-import { object, string, number } from "yup";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { object, string, number, InferType } from "yup";
 
 // components
 import {
+  Box,
+  Button,
+  TextField,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
-  Box,
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 
-import { TextField } from "ui/TextField";
 import { ColorPicker } from "common/components/ColorPicker";
 
 // utils
@@ -34,7 +36,7 @@ const sxDialogContent: SxProps<Theme> = () => ({
 });
 
 const defaultColor = { shade: "500", color: red };
-const initialValues = { title: "", priority: 1, color: red[500] };
+const defaultValues: FormData = { title: "", priority: 1, color: red[500] };
 
 const validationSchema = object({
   title: string().required().max(50),
@@ -42,58 +44,98 @@ const validationSchema = object({
   color: string().required(),
 });
 
+type FormData = InferType<typeof validationSchema>;
+
 export const AddPriorityDialog: React.FC<Props> = ({ open, toggleOpen }) => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const { control, handleSubmit, setValue, formState, reset } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues,
+  });
+
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset(defaultValues);
+    }
+  }, [formState, reset]);
+
+  const onSubmit = (data: FormData) => {
+    dispatch(addPriorities(data));
+
+    toggleOpen();
+  };
+
   return (
     <Dialog open={open} onClose={toggleOpen}>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={data => {
-          dispatch(addPriorities(data));
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogTitle>New priority</DialogTitle>
 
-          toggleOpen();
-        }}
-      >
-        {({ setFieldValue }) => (
-          <Form>
-            <DialogTitle>New priority</DialogTitle>
-            <DialogContent sx={sxDialogContent}>
+        <DialogContent sx={sxDialogContent}>
+          <Controller
+            name="title"
+            control={control}
+            rules={{ required: true }}
+            render={({
+              field: { onChange, onBlur, value, ref },
+              fieldState,
+            }) => (
               <TextField
                 autoFocus
-                name="title"
+                variant="standard"
                 placeholder="Title"
                 fullWidth
-                fastField
-                variant="standard"
                 margin="dense"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                inputRef={ref}
+                error={Boolean(fieldState?.error?.message)}
+                helperText={fieldState?.error?.message || " "}
               />
+            )}
+          />
+
+          <Controller
+            name="priority"
+            control={control}
+            rules={{ required: true }}
+            render={({
+              field: { onChange, onBlur, value, ref },
+              fieldState,
+            }) => (
               <TextField
-                name="priority"
-                placeholder="Priority"
                 type="number"
-                fastField
                 variant="standard"
+                placeholder="Priority"
+                fullWidth
                 margin="dense"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                inputRef={ref}
+                error={Boolean(fieldState?.error?.message)}
+                helperText={fieldState?.error?.message || " "}
                 InputLabelProps={{
                   shrink: true,
                 }}
               />
-              <Box mt={2}>
-                <ColorPicker
-                  defaultColor={defaultColor}
-                  onClick={color => setFieldValue("color", color)}
-                />
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={toggleOpen}>Cancel</Button>
-              <Button type="submit">Save</Button>
-            </DialogActions>
-          </Form>
-        )}
-      </Formik>
+            )}
+          />
+
+          <Box mt={2}>
+            <ColorPicker
+              defaultColor={defaultColor}
+              onClick={color => setValue("color", color)}
+            />
+          </Box>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={toggleOpen}>Cancel</Button>
+          <Button type="submit">Save</Button>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 };

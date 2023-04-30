@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Formik, Form } from "formik";
-import { object, string } from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { object, string, InferType } from "yup";
 
 // components
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, TextField } from "@mui/material";
 
-import { TextField } from "ui/TextField";
 import { Link } from "ui/Link";
 import { Wrapper } from "./Wrapper";
 import { Button } from "ui/Button";
@@ -24,6 +24,8 @@ import {
 // types
 import { AppDispatch, RootState } from "store";
 import { SxProps, Theme } from "@mui/system";
+
+type FormData = InferType<typeof validationSchema>;
 
 const sxTitle: SxProps<Theme> = {
   font: "normal normal bold 24px/27px Comfortaa",
@@ -44,7 +46,7 @@ const validationSchema = object({
   ),
 });
 
-const initialValues = {
+const defaultValues = {
   firstName: "",
   lastName: "",
   email: "",
@@ -58,107 +60,195 @@ export const Signup: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const loggedUser = useSelector((state: RootState) => state.auth.loggedUser);
 
+  const { control, handleSubmit } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues,
+  });
+
   useEffect(() => {
     if (loggedUser) {
       navigate("/");
     }
   }, [loggedUser]);
 
+  const onSubmit = (data: FormData) => {
+    const { firstName, lastName, email, password } = data;
+
+    const onRejected = () => {
+      enqueueSnackbar("Oops, something went wrong", {
+        variant: "error",
+      });
+    };
+    const onSuccess = (args: Record<string, unknown>) => {
+      if (args?.error) {
+        return onRejected();
+      }
+      enqueueSnackbar("Now you can login.", {
+        variant: "success",
+      });
+      navigate("/");
+    };
+
+    dispatch(
+      signup({
+        firstName,
+        lastName,
+        email,
+        password,
+      }),
+    ).then(onSuccess, onRejected);
+  };
+
   return (
     <Wrapper>
-      <Formik
-        validateOnBlur={false}
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={async (data, { setSubmitting }) => {
-          setSubmitting(true);
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box mb={5}>
+          <Typography align="center" sx={sxTitle}>
+            Sign Up
+          </Typography>
+        </Box>
 
-          const { firstName, lastName, email, password } = data;
+        <Box mb={3}>
+          <Controller
+            name="firstName"
+            control={control}
+            rules={{ required: true }}
+            render={({
+              field: { onChange, onBlur, value, ref },
+              fieldState,
+            }) => (
+              <TextField
+                variant="standard"
+                placeholder="First name"
+                fullWidth
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                inputRef={ref}
+                error={Boolean(fieldState?.error?.message)}
+                helperText={fieldState?.error?.message || " "}
+              />
+            )}
+          />
+        </Box>
 
-          const onRejected = () => {
-            enqueueSnackbar("Oops, something went wrong", {
-              variant: "error",
-            });
-          };
-          const onSuccess = (args: Record<string, unknown>) => {
-            if (args?.error) {
-              return onRejected();
-            }
-            enqueueSnackbar("Now you can login.", {
-              variant: "success",
-            });
-            navigate("/");
-          };
+        <Box mb={3}>
+          <Controller
+            name="lastName"
+            control={control}
+            rules={{ required: true }}
+            render={({
+              field: { onChange, onBlur, value, ref },
+              fieldState,
+            }) => (
+              <TextField
+                variant="standard"
+                placeholder="Last name"
+                fullWidth
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                inputRef={ref}
+                error={Boolean(fieldState?.error?.message)}
+                helperText={fieldState?.error?.message || " "}
+              />
+            )}
+          />
+        </Box>
 
-          dispatch(
-            signup({
-              firstName,
-              lastName,
-              email,
-              password,
-            }),
-          ).then(onSuccess, onRejected);
+        <Box mb={3}>
+          <Controller
+            name="email"
+            control={control}
+            rules={{ required: true }}
+            render={({
+              field: { onChange, onBlur, value, ref },
+              fieldState,
+            }) => (
+              <TextField
+                variant="standard"
+                placeholder="E-mail"
+                fullWidth
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                inputRef={ref}
+                error={Boolean(fieldState?.error?.message)}
+                helperText={fieldState?.error?.message || " "}
+              />
+            )}
+          />
+        </Box>
 
-          setSubmitting(false);
-        }}
-      >
-        <Form>
-          <Box mb={5}>
-            <Typography align="center" sx={sxTitle}>
-              Sign Up
-            </Typography>
-          </Box>
-          <Box mb={3}>
-            <TextField
-              variant="standard"
-              placeholder="First name"
-              fullWidth
-              name="firstName"
-            />
-          </Box>
-          <Box mb={3}>
-            <TextField
-              variant="standard"
-              placeholder="Last name"
-              fullWidth
-              name="lastName"
-            />
-          </Box>
-          <Box mb={3}>
-            <TextField
-              variant="standard"
-              placeholder="E-mail"
-              fullWidth
-              name="email"
-            />
-          </Box>
-          <Box mb={3}>
-            <Password name="password" placeholder="Password" />
-          </Box>
-          <Box mb={6}>
-            <Password name="confirm" placeholder="Confirm password" />
-          </Box>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <Button
-              gradient
-              variant="contained"
-              type="submit"
-              size="large"
-              fullWidth
-              sx={{ maxWidth: "257px" }}
-            >
-              Sign Up
-            </Button>
-            <Typography
-              color="textSecondary"
-              variant="body1"
-              sx={{ marginTop: 4.375 }}
-            >
-              I already have an account. <Link to="/login">Sign In</Link>
-            </Typography>
-          </Box>
-        </Form>
-      </Formik>
+        <Box mb={3}>
+          <Controller
+            name="password"
+            control={control}
+            rules={{ required: true }}
+            render={({
+              field: { onChange, onBlur, value, ref },
+              fieldState,
+            }) => (
+              <Password
+                variant="standard"
+                placeholder="Password"
+                fullWidth
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                inputRef={ref}
+                error={Boolean(fieldState?.error?.message)}
+                helperText={fieldState?.error?.message || " "}
+              />
+            )}
+          />
+        </Box>
+
+        <Box mb={6}>
+          <Controller
+            name="confirm"
+            control={control}
+            rules={{ required: true }}
+            render={({
+              field: { onChange, onBlur, value, ref },
+              fieldState,
+            }) => (
+              <Password
+                variant="standard"
+                placeholder="Confirm password"
+                fullWidth
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                inputRef={ref}
+                error={Boolean(fieldState?.error?.message)}
+                helperText={fieldState?.error?.message || " "}
+              />
+            )}
+          />
+        </Box>
+
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Button
+            gradient
+            variant="contained"
+            type="submit"
+            size="large"
+            fullWidth
+            sx={{ maxWidth: "257px" }}
+          >
+            Sign Up
+          </Button>
+
+          <Typography
+            color="textSecondary"
+            variant="body1"
+            sx={{ marginTop: 4.375 }}
+          >
+            I already have an account. <Link to="/login">Sign In</Link>
+          </Typography>
+        </Box>
+      </form>
     </Wrapper>
   );
 };

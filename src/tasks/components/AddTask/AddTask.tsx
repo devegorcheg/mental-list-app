@@ -1,12 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useFormik, Form, FormikProvider } from "formik";
-import { object, string, date } from "yup";
+import { useForm, Controller, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { object, string, date, InferType } from "yup";
 
 // components
-import { Box } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 
 import { AddTaskActions } from "./AddTaskActions";
-import { TextField } from "ui/TextField";
 
 // utils
 import { addTask } from "tasks/actions";
@@ -15,13 +15,15 @@ import { addTask } from "tasks/actions";
 import { SxProps, Theme } from "@mui/system";
 import { RootState, AppDispatch } from "store";
 
-const initialValues = { title: "", priority: "", dueDate: new Date() };
+export type FormData = InferType<typeof validationSchema>;
 
 const validationSchema = object({
   title: string().min(1).max(300).required(),
   priority: string().min(1).required(),
   dueDate: date().required(),
 });
+
+const defaultValues = { title: "", priority: "", dueDate: new Date() };
 
 const sxBox: SxProps<Theme> = theme => ({
   position: "fixed",
@@ -36,37 +38,48 @@ export const AddTask: React.FC = () => {
   const priorities = useSelector((state: RootState) => state.priorities.list);
   const dispatch = useDispatch<AppDispatch>();
 
-  const formik = useFormik({
-    initialValues: { ...initialValues, priority: priorities[0]?._id ?? "" },
-    enableReinitialize: true,
-    validateOnChange: false,
-    validateOnBlur: false,
-    validationSchema,
-    onSubmit: (data, { setSubmitting, resetForm }) => {
-      setSubmitting(true);
-
-      dispatch(addTask(data)).then(() => {
-        setSubmitting(false);
-        resetForm();
-      });
-    },
+  const methods = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: { ...defaultValues, priority: priorities[0]?._id ?? "" },
   });
+
+  const onSubmit = (data: FormData) => {
+    dispatch(addTask(data)).then(() => {
+      methods.reset({ ...defaultValues, priority: priorities[0]?._id ?? "" });
+    });
+  };
 
   return (
     <Box sx={sxBox} className="mui-fixed">
-      <FormikProvider value={formik}>
-        <Form>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
           <Box px={6.25} py={2}>
-            <TextField
+            <Controller
               name="title"
-              variant="standard"
-              fullWidth
-              placeholder="Enter task title…"
+              control={methods.control}
+              rules={{ required: true }}
+              render={({
+                field: { onChange, onBlur, value, ref },
+                fieldState,
+              }) => (
+                <TextField
+                  variant="standard"
+                  placeholder="Enter task title…"
+                  fullWidth
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  inputRef={ref}
+                  error={Boolean(fieldState?.error?.message)}
+                  helperText={fieldState?.error?.message || " "}
+                />
+              )}
             />
+
             <AddTaskActions />
           </Box>
-        </Form>
-      </FormikProvider>
+        </form>
+      </FormProvider>
     </Box>
   );
 };

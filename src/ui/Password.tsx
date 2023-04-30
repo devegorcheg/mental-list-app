@@ -1,25 +1,19 @@
 import { useState } from "react";
 
 // components
+import { TextField, TextFieldProps } from "@mui/material";
+
 import { Visibility } from "common/components/Visibility";
-import { TextField } from "./TextField";
 
-interface Props {
-  name: string;
-  placeholder?: string;
-}
-
-export const Password: React.FC<Props> = ({ name, placeholder }) => {
+export const Password: React.FC<TextFieldProps> = props => {
   const [showPassword, setShowing] = useState(false);
 
   return (
     <TextField
+      {...props}
       type={showPassword ? "text" : "password"}
-      name={name}
-      placeholder={placeholder}
-      variant="standard"
-      fullWidth
       InputProps={{
+        ...props.InputProps,
         endAdornment: <Visibility show={showPassword} setShow={setShowing} />,
       }}
     />

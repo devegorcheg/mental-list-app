@@ -10,7 +10,7 @@
 - redux/toolkit
 - typescript
 - material-ui
-- formik
+- react-hook-form
 - yup
 
 ## Локальная разработка
