@@ -9,11 +9,12 @@ import { Box, TextField } from "@mui/material";
 import { AddTaskActions } from "./AddTaskActions";
 
 // utils
+import { AppDispatch } from "store";
 import { addTask } from "tasks/actions";
+import { selectAllPriorities } from "priorities/redusers";
 
 // types
-import { SxProps, Theme } from "@mui/system";
-import { RootState, AppDispatch } from "store";
+import { SxProps, Theme } from "@mui/material/styles";
 
 export type FormData = InferType<typeof validationSchema>;
 
@@ -35,7 +36,7 @@ const sxBox: SxProps<Theme> = theme => ({
 });
 
 export const AddTask: React.FC = () => {
-  const priorities = useSelector((state: RootState) => state.priorities.list);
+  const priorities = useSelector(selectAllPriorities);
   const dispatch = useDispatch<AppDispatch>();
 
   const methods = useForm({

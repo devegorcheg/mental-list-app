@@ -9,7 +9,8 @@ import { AddPriority } from "./AddPriority";
 import { Sorting } from "./Sorting";
 
 // utils
-import { getPriorities, setFilter } from "priorities/actions";
+import { getPriorities, setFilter } from "../actions";
+import { selectAllPriorities } from "../redusers";
 
 // types
 import { AppDispatch, RootState } from "store";
@@ -17,7 +18,8 @@ import { Maybe } from "models/types";
 
 export const Priorities: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { list, filter } = useSelector((state: RootState) => state.priorities);
+  const priorities = useSelector(selectAllPriorities);
+  const { filter } = useSelector((state: RootState) => state.priorities);
 
   const handleFilter = useCallback(
     (id: Maybe<string>) => dispatch(setFilter(id)),
@@ -34,7 +36,8 @@ export const Priorities: React.FC = () => {
 
       <Box mt={3}>
         <PriorityItem title="All" isActive={!filter} onClick={handleFilter} />
-        {list.map(({ _id, title }) => (
+
+        {priorities.map(({ _id, title }) => (
           <PriorityItem
             key={_id}
             id={_id}

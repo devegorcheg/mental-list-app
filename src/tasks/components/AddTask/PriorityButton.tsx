@@ -1,30 +1,24 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useFormContext, useWatch } from "react-hook-form";
 
 // components
 import {
   Box,
-  IconButton,
-  Popover,
-  Typography,
-  SxProps,
-  Theme,
+  IconButton as MuiIconButton,
+  IconButtonProps,
 } from "@mui/material";
 
 import { CircleIcon } from "common/components/CircleIcon";
+import { PriorityPopover } from "./PriorityPopover";
 
 // utils
-import { styled } from "@mui/material/styles";
+import { styled, SxProps, Theme } from "@mui/material/styles";
+import { selectPriorityById } from "priorities/redusers";
+import { RootState } from "store";
 
 // types
-import { RootState } from "store";
-import { Priority } from "priorities/redusers";
 import { FormData } from "./AddTask";
-
-interface Props {
-  sx?: SxProps<Theme>;
-}
 
 const sxBox: SxProps<Theme> = ({ palette }) => ({
   position: "absolute",
@@ -34,41 +28,21 @@ const sxBox: SxProps<Theme> = ({ palette }) => ({
   height: "20px",
 });
 
-const sxPaper: SxProps<Theme> = ({ spacing }) => ({
-  padding: spacing(1, 2),
-  borderRadius: "8px",
-});
-
-const sxTypography: SxProps<Theme> = ({ spacing }) => ({
-  paddingLeft: spacing(1),
-});
-
-const sxPriorityBox: SxProps<Theme> = ({ spacing }) => ({
-  display: "flex",
-  alignItems: "center",
-  marginY: spacing(1),
-  cursor: "pointer",
-});
-
-const SIconButton = styled(IconButton)(({ theme }) => ({
+const IconButton = styled(MuiIconButton)(({ theme }) => ({
   position: "relative",
   color: theme.palette.text.secondary,
 }));
 
-export const PriorityButton: React.FC<Props> = ({ sx }) => {
+export const PriorityButton: React.FC<IconButtonProps> = props => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const priorities = useSelector((state: RootState) => state.priorities.list);
-  const { control, setValue } = useFormContext<FormData>();
-  const priority = useWatch({ control, name: "priority" });
 
-  const prioritiesMap = useMemo(
-    () =>
-      priorities.reduce<Record<string, Priority>>(
-        (acc, ell) => ({ ...acc, [ell._id]: ell }),
-        {},
-      ),
-    [priorities],
+  const { control } = useFormContext<FormData>();
+  const priorityId = useWatch({ control, name: "priority" });
+
+  const priority = useSelector((store: RootState) =>
+    selectPriorityById(store, priorityId),
   );
+
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -77,46 +51,17 @@ export const PriorityButton: React.FC<Props> = ({ sx }) => {
 
   return (
     <>
-      <SIconButton
+      <IconButton
         onClick={handleClick}
         size="small"
-        sx={sx}
         aria-describedby="priority-picker-popover"
+        {...props}
       >
-        <CircleIcon background={prioritiesMap[priority]?.color} />
+        <CircleIcon background={priority?.color} />
         {open ? <Box sx={sxBox} /> : null}
-      </SIconButton>
+      </IconButton>
 
-      <Popover
-        id="date-picker-popover"
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClick}
-        PaperProps={{ sx: sxPaper }}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        {priorities.map(({ _id, title, color }) => {
-          return (
-            <Box
-              key={_id}
-              sx={sxPriorityBox}
-              onClick={() => setValue("priority", _id)}
-            >
-              <CircleIcon fontSize="small" background={color} />
-              <Typography variant="body1" sx={sxTypography}>
-                {title}
-              </Typography>
-            </Box>
-          );
-        })}
-      </Popover>
+      <PriorityPopover open={open} anchorEl={anchorEl} onClose={handleClick} />
     </>
   );
 };

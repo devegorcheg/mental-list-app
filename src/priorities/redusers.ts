@@ -1,10 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 
 // actions
 import { addPriorities, getPriorities, setFilter, setSort } from "./actions";
 
 // types
 import { Maybe } from "models/types";
+import { RootState } from "store";
 
 export interface Priority {
   _id: string;
@@ -19,17 +20,22 @@ export enum Sort {
   DESC = "desc",
 }
 
-interface InitialState {
-  list: Priority[];
+interface DefaultState {
   filter: Maybe<string>;
   sort: Sort;
 }
 
-const initialState: InitialState = {
-  list: [],
+const defaultState: DefaultState = {
   filter: null,
   sort: Sort.ASC,
 };
+
+const priorityAdapter = createEntityAdapter<Priority>({
+  selectId: ({ _id }) => _id,
+  sortComparer: (a, b) => b.priority - a.priority,
+});
+
+const initialState = priorityAdapter.getInitialState(defaultState);
 
 export const prioritiesReducer = createSlice({
   name: "priorities",
@@ -37,33 +43,30 @@ export const prioritiesReducer = createSlice({
   reducers: {},
   extraReducers: builder => {
     // getPriorities
-    builder.addCase(getPriorities.pending, state => {
-      state.list = [];
-    });
     builder.addCase(getPriorities.fulfilled, (state, action) => {
-      state.list = [...action.payload];
+      priorityAdapter.upsertMany(state, action.payload);
     });
     builder.addCase(getPriorities.rejected, (_, action) => {
       console.error(action?.payload ?? action.error.message ?? "Error");
     });
-
     // addPriorities
-    builder.addCase(addPriorities.pending, state => {
-      state.list = [];
-    });
-    builder.addCase(addPriorities.fulfilled, (state, action) => {
-      state.list = [...action.payload];
-    });
+    builder.addCase(addPriorities.fulfilled, priorityAdapter.addMany);
     builder.addCase(addPriorities.rejected, (_, action) => {
       console.error(action?.payload ?? action.error.message ?? "Error");
     });
-
+    // filter
     builder.addCase(setFilter, (state, action) => {
       state.filter = action.payload;
     });
-
+    // sort
     builder.addCase(setSort, (state, action) => {
       state.sort = action.payload;
     });
   },
 });
+
+export const {
+  selectAll: selectAllPriorities,
+  selectById: selectPriorityById,
+  selectIds: selectPriorityIds,
+} = priorityAdapter.getSelectors<RootState>(state => state.priorities);
