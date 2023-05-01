@@ -50,7 +50,7 @@ export const prioritiesReducer = createSlice({
       console.error(action?.payload ?? action.error.message ?? "Error");
     });
     // addPriorities
-    builder.addCase(addPriorities.fulfilled, priorityAdapter.addMany);
+    builder.addCase(addPriorities.fulfilled, priorityAdapter.addOne);
     builder.addCase(addPriorities.rejected, (_, action) => {
       console.error(action?.payload ?? action.error.message ?? "Error");
     });
