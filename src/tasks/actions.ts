@@ -6,6 +6,7 @@ import { request } from "lib/api";
 // types
 import { Maybe, ThunkAPI } from "models/types";
 import { Task } from "./redusers";
+import { Sort } from "priorities/redusers";
 
 interface AddTask {
   title: string;
@@ -13,7 +14,7 @@ interface AddTask {
   dueDate: Date;
 }
 
-export const addTask = createAsyncThunk<Task[], AddTask, ThunkAPI>(
+export const addTask = createAsyncThunk<Task, AddTask, ThunkAPI>(
   "tasks/addTask",
   async (task, { rejectWithValue }) => {
     try {
@@ -33,11 +34,24 @@ export const addTask = createAsyncThunk<Task[], AddTask, ThunkAPI>(
   },
 );
 
-export const getTasks = createAsyncThunk<Task[], Maybe<undefined>, ThunkAPI>(
+interface Variables {
+  sort: Sort;
+  filter: Maybe<string>;
+}
+
+export const getTasks = createAsyncThunk<Task[], Variables, ThunkAPI>(
   "tasks/getTasks",
-  async (_, { rejectWithValue }) => {
+  async (variables, { rejectWithValue }) => {
+    const params = new URLSearchParams({
+      sort: variables.sort,
+    });
+
+    if (variables?.filter) {
+      params.append("filter", variables!.filter);
+    }
+
     try {
-      const resp = await request("/api/tasks");
+      const resp = await request(`/api/tasks?${params.toString()}`);
 
       return resp.json();
     } catch (error: any) {

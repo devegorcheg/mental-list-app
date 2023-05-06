@@ -1,4 +1,9 @@
-import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createEntityAdapter,
+  Action,
+  AnyAction,
+} from "@reduxjs/toolkit";
 
 // actions
 import { addTask, getTasks } from "./actions";
@@ -16,9 +21,20 @@ export interface Task {
   done: boolean;
 }
 
-const tasksAdapter = createEntityAdapter<Task>({ selectId: ({ _id }) => _id });
+interface RejectedAction extends Action {
+  payload?: Error;
+  error: Error;
+}
+
+const tasksAdapter = createEntityAdapter<Task>({
+  selectId: ({ _id }) => _id,
+});
 
 const initialState = tasksAdapter.getInitialState();
+
+function isRejectedAction(action: AnyAction): action is RejectedAction {
+  return action.type.endsWith("rejected");
+}
 
 export const tasksReducer = createSlice({
   name: "tasks",
@@ -26,16 +42,14 @@ export const tasksReducer = createSlice({
   reducers: {},
   extraReducers: builder => {
     // addTask
-    builder.addCase(addTask.fulfilled, tasksAdapter.addMany);
-    builder.addCase(addTask.rejected, (_, action) => {
-      console.error(action?.payload ?? action.error.message ?? "Error");
-    });
+    builder.addCase(addTask.fulfilled, tasksAdapter.addOne);
     // get tasks
     builder.addCase(getTasks.fulfilled, (state, action) => {
-      tasksAdapter.upsertMany(state, action.payload);
+      tasksAdapter.setAll(state, action);
     });
-    builder.addCase(getTasks.rejected, (_, action) => {
-      console.error(action?.payload ?? action.error.message ?? "Error");
+    // rejected
+    builder.addMatcher(isRejectedAction, (_, action) => {
+      console.error(action?.payload ?? action?.error?.message ?? "Error");
     });
   },
 });

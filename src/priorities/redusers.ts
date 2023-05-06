@@ -43,9 +43,7 @@ export const prioritiesReducer = createSlice({
   reducers: {},
   extraReducers: builder => {
     // getPriorities
-    builder.addCase(getPriorities.fulfilled, (state, action) => {
-      priorityAdapter.upsertMany(state, action.payload);
-    });
+    builder.addCase(getPriorities.fulfilled, priorityAdapter.upsertMany);
     builder.addCase(getPriorities.rejected, (_, action) => {
       console.error(action?.payload ?? action.error.message ?? "Error");
     });
