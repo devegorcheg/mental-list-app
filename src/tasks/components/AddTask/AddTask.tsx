@@ -9,12 +9,12 @@ import { Box, TextField } from "@mui/material";
 import { AddTaskActions } from "./AddTaskActions";
 
 // utils
-import { AppDispatch } from "store";
-import { addTask } from "tasks/actions";
+import { addTask, getTasks } from "tasks/actions";
 import { selectAllPriorities } from "priorities/redusers";
 
 // types
 import { SxProps, Theme } from "@mui/material/styles";
+import { AppDispatch, RootState } from "models/types";
 
 export type FormData = InferType<typeof validationSchema>;
 
@@ -37,6 +37,7 @@ const sxBox: SxProps<Theme> = theme => ({
 
 export const AddTask: React.FC = () => {
   const priorities = useSelector(selectAllPriorities);
+  const { sort, filter } = useSelector((store: RootState) => store.tasks);
   const dispatch = useDispatch<AppDispatch>();
 
   const methods = useForm({
@@ -44,10 +45,13 @@ export const AddTask: React.FC = () => {
     defaultValues: { ...defaultValues, priority: priorities[0]?._id ?? "" },
   });
 
+  // TODO: add loading
   const onSubmit = (data: FormData) => {
-    dispatch(addTask(data)).then(() => {
-      methods.reset({ ...defaultValues, priority: priorities[0]?._id ?? "" });
-    });
+    dispatch(addTask(data))
+      .then(() => dispatch(getTasks({ sort, filter })))
+      .finally(() => {
+        methods.reset({ ...defaultValues, priority: priorities[0]?._id ?? "" });
+      });
   };
 
   return (
