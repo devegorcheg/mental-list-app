@@ -22,8 +22,8 @@ import {
 } from "common/validationSchemes";
 
 // types
-import { AppDispatch, RootState } from "store";
 import { SxProps, Theme } from "@mui/system";
+import { AppDispatch, RootState } from "models/types";
 
 type FormData = InferType<typeof validationSchema>;
 

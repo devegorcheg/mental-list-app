@@ -8,7 +8,7 @@ import { tasksReducer } from "tasks/redusers";
 // utils
 import { accountsPassword, accountsClient } from "lib/accounts";
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   auth: authReducer.reducer,
   priorities: prioritiesReducer.reducer,
   tasks: tasksReducer.reducer,
@@ -31,6 +31,3 @@ export const store = configureStore({
       },
     }),
 });
-
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof rootReducer>;

@@ -23,7 +23,7 @@ import { addPriorities } from "priorities/actions";
 
 // types
 import { SxProps, Theme } from "@mui/system";
-import { AppDispatch } from "store";
+import { AppDispatch } from "models/types";
 
 interface Props {
   open: boolean;

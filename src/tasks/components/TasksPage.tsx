@@ -11,11 +11,11 @@ import { AddTask } from "./AddTask";
 import { getTasks } from "tasks/actions";
 
 // types
-import { AppDispatch, RootState } from "store";
+import { AppDispatch, RootState } from "models/types";
 
 export const TasksPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { sort, filter } = useSelector((store: RootState) => store.priorities);
+  const { sort, filter } = useSelector((store: RootState) => store.tasks);
 
   useEffect(() => {
     dispatch(getTasks({ sort, filter }));

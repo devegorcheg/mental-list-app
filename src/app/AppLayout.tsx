@@ -12,7 +12,7 @@ import { MainMenuButton } from "./MainMenuButton";
 import { styled } from "@mui/material/styles";
 
 // types
-import { RootState } from "store";
+import { RootState } from "models/types";
 
 const Main = styled("main")(() => ({
   flexGrow: 1,

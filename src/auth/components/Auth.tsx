@@ -8,7 +8,7 @@ import { Backdrop, CircularProgress } from "@mui/material";
 import { getUser } from "auth/actions";
 
 // types
-import { AppDispatch, RootState } from "store";
+import { AppDispatch, RootState } from "models/types";
 
 export const Auth: React.FC = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();

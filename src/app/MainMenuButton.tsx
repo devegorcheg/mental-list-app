@@ -10,7 +10,7 @@ import { logout } from "auth/actions";
 
 // types
 import { SystemStyleObject } from "@mui/system";
-import { AppDispatch } from "store";
+import { AppDispatch } from "models/types";
 
 interface Props {
   sx?: SystemStyleObject<Theme>;

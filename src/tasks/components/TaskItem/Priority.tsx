@@ -9,7 +9,7 @@ import { CircleIcon } from "common/components/CircleIcon";
 import { selectPriorityById } from "priorities/redusers";
 
 // types
-import { RootState } from "store";
+import { RootState } from "models/types";
 
 interface Props {
   priorityId: string;

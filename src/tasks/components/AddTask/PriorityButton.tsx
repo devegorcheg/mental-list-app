@@ -15,7 +15,7 @@ import { PriorityPopover } from "./PriorityPopover";
 // utils
 import { styled, SxProps, Theme } from "@mui/material/styles";
 import { selectPriorityById } from "priorities/redusers";
-import { RootState } from "store";
+import { RootState } from "models/types";
 
 // types
 import { FormData } from "./AddTask";
