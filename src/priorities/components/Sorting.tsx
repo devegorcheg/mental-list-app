@@ -6,12 +6,12 @@ import { Box, Typography } from "@mui/material";
 import { ExpandButton } from "common/components/ExpandButton";
 
 // utils
-import { setSort } from "priorities/actions";
+import { setSort } from "tasks/actions";
 
 // types
 import { SxProps, Theme } from "@mui/system";
-import { AppDispatch, RootState } from "store";
-import { Sort } from "../redusers";
+import { AppDispatch, RootState } from "models/types";
+import { Sort } from "tasks/redusers";
 
 const sxBox: SxProps<Theme> = {
   display: "flex",
@@ -28,7 +28,7 @@ const sxTitle: SxProps<Theme> = ({ palette, spacing }) => ({
 
 export const Sorting: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const sort = useSelector((state: RootState) => state.priorities.sort);
+  const { sort } = useSelector((state: RootState) => state.tasks);
 
   const handleSort = () =>
     dispatch(setSort(sort === Sort.ASC ? Sort.DESC : Sort.ASC));

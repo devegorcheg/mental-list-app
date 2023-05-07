@@ -1,11 +1,11 @@
-import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // utils
 import { request } from "lib/api";
 
 // types
 import { Maybe, ThunkAPI } from "models/types";
-import { Priority, Sort } from "./redusers";
+import { Priority } from "./redusers";
 
 interface AddPriority {
   title: string;
@@ -46,12 +46,4 @@ export const addPriorities = createAsyncThunk<Priority, AddPriority, ThunkAPI>(
       return rejectWithValue(error);
     }
   },
-);
-
-export const setFilter = createAction<Maybe<string>, "priorities/setFilter">(
-  "priorities/setFilter",
-);
-
-export const setSort = createAction<Sort, "priorities/setSort">(
-  "priorities/setSort",
 );

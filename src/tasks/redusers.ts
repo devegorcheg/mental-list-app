@@ -1,15 +1,14 @@
-import {
-  createSlice,
-  createEntityAdapter,
-  Action,
-  AnyAction,
-} from "@reduxjs/toolkit";
+import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 
 // actions
-import { addTask, getTasks } from "./actions";
+import { getTasks } from "./actions";
+
+// utis
+import { isRejectedAction } from "store/utils";
 
 // types
-import { RootState } from "store";
+import { RootState } from "models/types";
+import { Maybe } from "models/types";
 
 export interface Task {
   _id: string;
@@ -21,32 +20,42 @@ export interface Task {
   done: boolean;
 }
 
-interface RejectedAction extends Action {
-  payload?: Error;
-  error: Error;
+export enum Sort {
+  ASC = "asc",
+  DESC = "desc",
 }
+
+interface DefaultState {
+  filter: Maybe<string>;
+  sort: Sort;
+}
+
+const defaultState: DefaultState = {
+  filter: null,
+  sort: Sort.ASC,
+};
 
 const tasksAdapter = createEntityAdapter<Task>({
   selectId: ({ _id }) => _id,
 });
 
-const initialState = tasksAdapter.getInitialState();
-
-function isRejectedAction(action: AnyAction): action is RejectedAction {
-  return action.type.endsWith("rejected");
-}
+const initialState = tasksAdapter.getInitialState(defaultState);
 
 export const tasksReducer = createSlice({
   name: "tasks",
   initialState,
-  reducers: {},
+  reducers: {
+    setFilter: (state, action) => {
+      state.filter = action.payload;
+    },
+    setSort: (state, action) => {
+      state.sort = action.payload;
+    },
+  },
   extraReducers: builder => {
-    // addTask
-    builder.addCase(addTask.fulfilled, tasksAdapter.addOne);
     // get tasks
-    builder.addCase(getTasks.fulfilled, (state, action) => {
-      tasksAdapter.setAll(state, action);
-    });
+    builder.addCase(getTasks.fulfilled, tasksAdapter.setAll);
+
     // rejected
     builder.addMatcher(isRejectedAction, (_, action) => {
       console.error(action?.payload ?? action?.error?.message ?? "Error");

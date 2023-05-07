@@ -2,11 +2,10 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // utils
 import { request } from "lib/api";
+import { tasksReducer, Sort, Task } from "./redusers";
 
 // types
 import { Maybe, ThunkAPI } from "models/types";
-import { Task } from "./redusers";
-import { Sort } from "priorities/redusers";
 
 interface AddTask {
   title: string;
@@ -60,3 +59,5 @@ export const getTasks = createAsyncThunk<Task[], Variables, ThunkAPI>(
     }
   },
 );
+
+export const { setFilter, setSort } = tasksReducer.actions;

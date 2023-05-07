@@ -9,17 +9,18 @@ import { AddPriority } from "./AddPriority";
 import { Sorting } from "./Sorting";
 
 // utils
-import { getPriorities, setFilter } from "../actions";
+import { getPriorities } from "../actions";
+import { setFilter } from "tasks/actions";
 import { selectAllPriorities } from "../redusers";
 
 // types
-import { AppDispatch, RootState } from "store";
 import { Maybe } from "models/types";
+import { AppDispatch, RootState } from "models/types";
 
 export const Priorities: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const priorities = useSelector(selectAllPriorities);
-  const { filter } = useSelector((state: RootState) => state.priorities);
+  const { filter } = useSelector((state: RootState) => state.tasks);
 
   const handleFilter = useCallback(
     (id: Maybe<string>) => dispatch(setFilter(id)),
